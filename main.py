@@ -88,7 +88,7 @@ class BaseEventDispatcher(EventDispatcher):
         pass
 
 
-class FileChooserDesktop(BaseEventDispatcher):
+class ImagePickerDesktop(BaseEventDispatcher):
     selection = ListProperty([], allownone=True)
 
     def __init__(self, *args, **kwargs):
@@ -124,7 +124,7 @@ class FileChooserDesktop(BaseEventDispatcher):
         return path
 
 
-class FileChooserAndroid(BaseEventDispatcher):
+class ImagePickerAndroid(BaseEventDispatcher):
     def __init__(self, pick_image: int = 1, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -459,11 +459,11 @@ Screen:
             super().__init__(**kwargs)
 
             if platform == 'android':
-                self.chooser = FileChooserAndroid()
+                self.picker = ImagePickerAndroid()
             else:
-                self.chooser = FileChooserDesktop()
+                self.picker = ImagePickerDesktop()
 
-            self.chooser.bind(on_image_selected=self.on_image_selected)
+            self.picker.bind(on_image_selected=self.on_image_selected)
 
         def build(self):
             return Builder.load_string(KV)
@@ -473,7 +473,7 @@ Screen:
                 request_permissions([Permission.WRITE_EXTERNAL_STORAGE])
 
         def open_file_manager(self):
-            self.chooser.choose(self.root.ids.lbl)
+            self.picker.choose(self.root.ids.lbl)
 
         @mainthread
         def on_image_selected(self, inst, path: str):
