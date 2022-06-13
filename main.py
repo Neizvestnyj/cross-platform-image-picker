@@ -88,7 +88,7 @@ class BaseEventDispatcher(EventDispatcher):
         pass
 
 
-class ImagePickerDesktop(BaseEventDispatcher):
+class ImagePicker(BaseEventDispatcher):
     selection = ListProperty([], allownone=True)
 
     def __init__(self, *args, **kwargs):
@@ -98,13 +98,13 @@ class ImagePickerDesktop(BaseEventDispatcher):
     def choose(self, widget: WeakProxy, **kwargs):
         self.widget = widget
 
-        Logger.debug('FileChooserDesktop start')
+        Logger.debug('ImagePicker start')
 
-        filechooser.open_file(on_selection=self.file_selection, filters=["*jpg", "*png", "*bmp"])
+        filechooser.open_file(on_selection=self.file_selection, filters=[["Image", "*jpg", "*png", "*bmp", "*jpeg"]])
 
     def file_selection(self, selection):
         if selection:
-            path = str(*selection)
+            path = str(selection[0])
             if not os.path.exists(tmp_images_path):
                 os.makedirs(tmp_images_path)
 
@@ -461,7 +461,8 @@ Screen:
             if platform == 'android':
                 self.picker = ImagePickerAndroid()
             else:
-                self.picker = ImagePickerDesktop()
+                # Windows, Linux, MacOS, ios
+                self.picker = ImagePicker()
 
             self.picker.bind(on_image_selected=self.on_image_selected)
 
